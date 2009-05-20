@@ -6,7 +6,6 @@
     <em:id>dictionaryfox@h5i.biz</em:id>
     <em:version>0.6</em:version>
     <em:type>2</em:type>
-    <em:updateURL>https://www.h5i.biz/files/DictionaryFox.rdf</em:updateURL>
     <em:optionsURL>chrome://dictionaryfox/content/config.xul</em:optionsURL>
     <em:targetApplication>
       <Description>

@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is
  * Hideaki Hayashi.
- * Portions created by the Initial Developer are Copyright (C) 2008
+ * Portions created by the Initial Developer are Copyright (C) 2008, 2009
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -36,6 +36,7 @@
 
 function DictionaryFox() {
   this.selectionWord="";
+  this.prevEvent=null;
 }
 
 DictionaryFox.prototype = {
@@ -76,6 +77,40 @@ DictionaryFox.prototype = {
         /* get selection from regular document */
         var selection = window.content.getSelection();
         selectionString = selection.toString()
+        if(event != null && selectionString == ""){
+          /* try to get word under cursor */
+          var range = document.createRange();
+          var rangeStart = event.rangeOffset;
+          var rangeEnd = event.rangeOffset;
+          var ws = /[\s\.\,\?\:\"\'\(\)]/;
+          range.setStart(event.rangeParent, event.rangeOffset);
+          range.setEnd(event.rangeParent, event.rangeOffset);
+          // now find beginning and end of word
+          while(!ws.test(range.toString()[0]) && rangeStart >= 0) {
+            rangeStart--;
+            if(rangeStart >= 0)
+              range.setStart(event.rangeParent, rangeStart);
+          }
+          // move forward one char again
+          rangeStart++;
+          range.setStart(event.rangeParent, rangeStart);
+
+          while(!ws.test(range.toString().substr(-1,1))) {
+            rangeEnd++;
+            try {
+              range.setEnd(event.rangeParent, rangeEnd);
+            }
+            catch(ex) {
+              // dunno how to figure out if rangeEnd is too big?
+              break;
+            }
+          }
+          // move back one char again
+          rangeEnd--;
+          range.setEnd(event.rangeParent, rangeEnd);
+
+          selectionString = range.toString();
+        }
       }
       this.selectionWord = selectionString;
     } catch (err) {
@@ -97,8 +132,7 @@ DictionaryFox.prototype = {
   },
 
   onLookupKey: function(event) {
-    //Maybe event is unnecessary here.
-    this.setSelectionWord(event);
+    this.setSelectionWord(null);
     this.lookupDictionary();
   },
 
