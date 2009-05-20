@@ -1,0 +1,8 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(B369A37E-0ABE-11DD-BA80-83D655D89593)]
+interface IDictionaryApp: nsISupports
+{
+  void LookUp(in string a);
+};
+
