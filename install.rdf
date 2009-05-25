@@ -4,7 +4,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>dictionaryfox@h5i.biz</em:id>
-    <em:version>0.6</em:version>
+    <em:version>0.7</em:version>
     <em:type>2</em:type>
     <em:optionsURL>chrome://dictionaryfox/content/config.xul</em:optionsURL>
     <em:targetApplication>
@@ -16,7 +16,7 @@
     </em:targetApplication>
     <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
     <em:name>DictionaryFox</em:name>
-    <em:description>Looks up words in Dictionary.app on Mac OS X</em:description>
+    <em:description>Looks up words in Dictionary.app on Mac OS X. Optionally, records history of the words you looked up in Twitter.</em:description>
     <em:creator>Hideaki Hayashi</em:creator>
 
   </Description>
