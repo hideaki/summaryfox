@@ -83,6 +83,20 @@ const DictionaryFoxConfig = {
     var e = document.getElementById("dictionaryfox-key-lookup");
     e.value = this.getPrintableKeyName(param[2], param[0], param[1]);
     e.initialValue = e.pref = pref;
+
+    /* display twitter account info */
+    var twitterOn = this.prefService.getBoolPref("twitterOn");
+    /* the statement after || covers the case where config.xul is
+     * poped up from Add-ons window
+     */
+    var dictionaryFox = window.opener.gDictionaryFox || window.opener.opener.gDictionaryFox;
+    var userpass = dictionaryFox.getUserPass();
+    var twitelem = document.getElementById("dictionaryfox-twitter-on");
+    var userelem = document.getElementById("dictionaryfox-twitter-username");
+    var passelem = document.getElementById("dictionaryfox-twitter-password");
+    twitelem.checked = twitterOn;
+    userelem.value = userpass == null ? "" : userpass.user;
+    passelem.value = userpass == null ? "" : userpass.password;
   },
 
   recognize: function(e) {
@@ -149,16 +163,27 @@ const DictionaryFoxConfig = {
   },
 
   onConfigOk: function() {
-    var elem = document.getElementById("dictionaryfox-key-lookup");
-    this.prefService.setCharPref("shortcut", elem.pref);
-    if (elem.pref != elem.initialValue) {
+    var keyelem = document.getElementById("dictionaryfox-key-lookup");
+    var twitelem = document.getElementById("dictionaryfox-twitter-on");
+    var userelem = document.getElementById("dictionaryfox-twitter-username");
+    var passelem = document.getElementById("dictionaryfox-twitter-password");
+    if (twitelem.checked == true && (userelem.value == "" || passelem.value == "")) {
+      alert("To record history, Twitter username/password is required.");
+      return false;
+    }
+    this.prefService.setCharPref("shortcut", keyelem.pref);
+    if (keyelem.pref != keyelem.initialValue) {
       alert("New shortcut key affects only new windows.");
     }
+    this.prefService.setBoolPref("twitterOn", twitelem.checked);
     /* the statement after || covers the case where config.xul is
      * poped up from Add-ons window
      */
     var dictionaryFox = window.opener.gDictionaryFox || window.opener.opener.gDictionaryFox;
+    dictionaryFox.saveUserPass(userelem.value, passelem.value);
+    /* set saved info into runtime */
     dictionaryFox.setupShortcut();
+    dictionaryFox.setupTwitter();
     return true;
   },
 

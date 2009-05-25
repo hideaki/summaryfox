@@ -4,7 +4,7 @@
     <menuitem label='DictionaryFox' oncommand='gDictionaryFox.onConfigure()'/>
   </menupopup>
   <popup id="contentAreaContextMenu">
-    <menuitem label='Look Up in Dictionary' oncommand='gDictionaryFox.lookupDictionary();'/>
+    <menuitem label='Look Up in Dictionary' oncommand='gDictionaryFox.onContextMenuSelect();'/>
     <keyset>
       <key id="dictionaryfox-key-lookup" oncommand='gDictionaryFox.onLookupKey(event);'/>
     </keyset>
