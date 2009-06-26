@@ -221,6 +221,19 @@ DictionaryFox.prototype = {
     return;
   },
 
+  getDefinition: function() {
+    try {
+      netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+      var myComponent = Components.classes['@h5i.biz/XPCOM/IDictionaryApp;1']
+        .createInstance(Components.interfaces.IDictionaryApp);
+      var res = myComponent.GetDefinition(unescape(encodeURI(this.selectionWord)));
+      return decodeURIComponent(escape(res));
+    } catch (err) {
+      alert(err);
+    }
+    return "";
+  },
+
   onContextMenuSelect: function() {
     this.lookupDictionary();
     if (this.twitterOn) this.sendTwitter(); 
@@ -244,7 +257,9 @@ DictionaryFox.prototype = {
       alert("Username/Password is required to record history in Twitter.");
       return;
     }
-    var params = "status=" + encodeURIComponent("looked up \"" + this.selectionWord + "\". #dictionaryfox");
+    var text = "looked up \"" + this.selectionWord + "\". #dictionaryfox\n" + this.getDefinition();
+    text = text.substr(0,140);
+    var params = "status=" + encodeURIComponent(text);
     var request = new HttpRequest("https://twitter.com/statuses/update.json", params);
     request.setAuthorization(this.userpass.user, this.userpass.password);
     request.asyncOpen(null);

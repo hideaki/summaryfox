@@ -17,6 +17,7 @@ GECKO_INCLUDES = -I$(GECKO_SDK_PATH)/include
 GECKO_LDFLAGS =  -L$(GECKO_SDK_PATH)/lib -lxpcom -lxpcomglue -lxpcomglue_s \
                  -lnspr4      \
                  -lplds4      
+FRAMEWORK_LDFLAGS = -framework CoreServices
 IDL_FILE = IDictionaryApp.idl
 XPT_FILE = IDictionaryApp.xpt
 IDL_H_FILE = IDictionaryApp.h
@@ -32,7 +33,7 @@ $(XPT_FILE): IDictionaryApp.idl
 	$(XPIDL) -m typelib -w -v -I $(GECKO_SDK_PATH)/idl -e $(XPT_FILE) IDictionaryApp.idl
 
 $(DYLIB_FILE): $(CPP_FILES) $(IDL_H_FILE)
-	$(CPP) -Wall -Os -dynamiclib -o $(DYLIB_FILE) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $(GECKO_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(CPP_FILES)
+	$(CPP) -Wall -Os -dynamiclib -o $(DYLIB_FILE) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $(GECKO_LDFLAGS) $(FRAMEWORK_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(CPP_FILES)
 	chmod +x $(DYLIB_FILE)
  
 clean: 

@@ -10,4 +10,5 @@ function DictionaryAppTest() {
 	}
     textval = document.getElementById("test").value
 	obj.LookUp(encodeURI(textval));
+	alert(textval + ":\n" + decodeURIComponent(escape(obj.GetDefinition(unescape(encodeURI(textval))))));
 }

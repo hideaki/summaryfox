@@ -4,5 +4,6 @@
 interface IDictionaryApp: nsISupports
 {
   void LookUp(in string a);
+  string GetDefinition(in string a);
 };
 
