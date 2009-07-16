@@ -150,6 +150,11 @@ DictionaryFox.prototype = {
     this.userpass = this.getUserPass();
   },
 
+  updateCursorLoc: function(event) {
+    this.rangeParent = event.rangeParent;
+    this.rangeOffset = event.rangeOffset;
+  },
+
   setSelectionWord: function(event) {
     try {
       var target = document.commandDispatcher.focusedElement;
@@ -167,28 +172,28 @@ DictionaryFox.prototype = {
         /* get selection from regular document */
         var selection = window.content.getSelection();
         selectionString = selection.toString()
-        if(event != null && event.rangeParent && selectionString == ""){
+        if(this.rangeParent && selectionString == ""){
           /* try to get word under cursor */
           var range = document.createRange();
-          var rangeStart = event.rangeOffset;
-          var rangeEnd = event.rangeOffset;
+          var rangeStart = this.rangeOffset;
+          var rangeEnd = this.rangeOffset;
           var ws = /[\s\.\,\?\:\"\'\(\)]/;
-          range.setStart(event.rangeParent, event.rangeOffset);
-          range.setEnd(event.rangeParent, event.rangeOffset);
+          range.setStart(this.rangeParent, this.rangeOffset);
+          range.setEnd(this.rangeParent, this.rangeOffset);
           // now find beginning and end of word
           while(!ws.test(range.toString()[0]) && rangeStart >= 0) {
             rangeStart--;
             if(rangeStart >= 0)
-              range.setStart(event.rangeParent, rangeStart);
+              range.setStart(this.rangeParent, rangeStart);
           }
           // move forward one char again
           rangeStart++;
-          range.setStart(event.rangeParent, rangeStart);
+          range.setStart(this.rangeParent, rangeStart);
 
           while(!ws.test(range.toString().substr(-1,1))) {
             rangeEnd++;
             try {
-              range.setEnd(event.rangeParent, rangeEnd);
+              range.setEnd(this.rangeParent, rangeEnd);
             }
             catch(ex) {
               // dunno how to figure out if rangeEnd is too big?
@@ -197,7 +202,7 @@ DictionaryFox.prototype = {
           }
           // move back one char again
           rangeEnd--;
-          range.setEnd(event.rangeParent, rangeEnd);
+          range.setEnd(this.rangeParent, rangeEnd);
 
           selectionString = range.toString();
         }
@@ -405,5 +410,7 @@ HttpRequest.prototype.StreamListener.prototype = {
 };
 
 var gDictionaryFox = new DictionaryFox();
+document.addEventListener("mousemove", function(e) { gDictionaryFox.updateCursorLoc(e); }, true);
+document.addEventListener("mousedown", function(e) { gDictionaryFox.updateCursorLoc(e); }, true);
 document.addEventListener("contextmenu", function(e) { gDictionaryFox.setSelectionWord(e); }, true);
 window.addEventListener("load", function(e) { gDictionaryFox.load(); }, false);
