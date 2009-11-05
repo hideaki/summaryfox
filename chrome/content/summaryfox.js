@@ -11,7 +11,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is DictionaryFox.
+ * The Original Code is SummaryFox.
  *
  * The Initial Developer of the Original Code is
  * Hideaki Hayashi.
@@ -34,107 +34,22 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-function DictionaryFox() {
+function SummaryFox() {
   this.selectionWord = "";
-  this.passHost = "chrome://dictionaryfox";
+  this.passHost = "chrome://summaryfox";
 }
 
-DictionaryFox.prototype = {
+SummaryFox.prototype = {
   load: function() {
     /* load preference service */
     this.prefService = Components.classes['@mozilla.org/preferences-service;1']
-      .getService(Components.interfaces.nsIPrefService).getBranch("extensions.dictionaryfox.");
+      .getService(Components.interfaces.nsIPrefService).getBranch("extensions.summaryfox.");
 
-    this.initPasswordMon();
     this.setupShortcut();
-    this.setupTwitter();
-  },
-
-  initPasswordMon: function() {
-    if ("@mozilla.org/passwordmanager;1" in Components.classes) {
-      //FF2 Password Manager
-      this.passwordMan = Components.classes["@mozilla.org/passwordmanager;1"]
-                         .createInstance(Components.interfaces.nsIPasswordManager);
-    }
-    else if ("@mozilla.org/login-manager;1" in Components.classes) {
-      //FF3 Login Manager
-      this.loginMan = Components.classes["@mozilla.org/login-manager;1"]
-                      .getService(Components.interfaces.nsILoginManager);
-    }
-  },
-
-  saveUserPass: function(user, pass) {
-    this.removeUserPass();
-    //username/password is unset
-    if(user == "" || pass == "") return;
-
-    if (this.passwordMan) {
-      //FF2
-      this.passwordMan.addUser(this.passHost, user, pass);
-    }
-    else if (this.loginMan) {
-      //FF3
-      var nsLoginInfo = new Components.Constructor("@mozilla.org/login-manager/loginInfo;1",
-          Components.interfaces.nsILoginInfo,
-          "init");
-      var loginInfo = new nsLoginInfo(this.passHost, this.passHost, null, user, pass, "username", "password");
-      this.loginMan.addLogin(loginInfo);
-    }
-  },
-
-  removeUserPass: function() {
-    if (this.passwordMan) {
-      // for Password Manager
-      var userpass = this.getUserPass();
-      if (userpass != null)
-        this.passwordMan.removeUser(this.passHost, userpass.user);
-    }
-    else if (this.loginMan) {
-      // for Login Manager
-      var logins = this.loginMan.findLogins({}, this.passHost, "", null);
-      for (var i = 0; i < logins.length; ++i) 
-        this.loginMan.removeLogin(logins[i]);
-    }
-  },
-
-  getUserPass: function() {
-    if (this.passwordMan) {
-      // FF2 Password Manager
-      var en = this.passwordMan.enumerator;
-      while (en.hasMoreElements()) {
-        try {
-          var pass = en.getNext().QueryInterface(Components.interfaces.nsIPassword);
-          if (pass.host == this.passHost) {
-            // found!
-            var res = new Object();
-            res.user=pass.user;
-            res.password=pass.password;
-            return res;
-          }
-        } catch (ex) {
-          //decrypting password failed. just keep looking.
-          continue;
-        }
-      }
-      return null;
-    }
-    else if (this.loginMan) {
-      // FF3 Login Manager
-      var logins = this.loginMan.findLogins({}, this.passHost, "", null);
-      if (logins.length > 0) {
-        var res = new Object();
-        res.user=logins[0].username;
-        res.password=logins[0].password;
-        return res;
-      }
-      else
-        return null;
-    }
-    return null;
   },
 
   setupShortcut: function() {
-    var elem = document.getElementById("dictionaryfox-key-lookup");
+    var elem = document.getElementById("summaryfox-key-summarize");
     var pref = this.prefService.getCharPref("shortcut");
     var params = pref.split(/,/);
 
@@ -143,11 +58,6 @@ DictionaryFox.prototype = {
     if (params[1])
       elem.setAttribute("keycode", params[1]);
     elem.setAttribute("modifiers", params[2]);
-  },
-
-  setupTwitter: function() {
-    this.twitterOn = this.prefService.getBoolPref("twitterOn");
-    this.userpass = this.getUserPass();
   },
 
   updateCursorLoc: function(event) {
@@ -214,60 +124,31 @@ DictionaryFox.prototype = {
     return;
   },
 
-  lookupDictionary: function() {
+  summarize: function() {
     try {
       netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-      var myComponent = Components.classes['@h5i.biz/XPCOM/IDictionaryApp;1']
-        .createInstance(Components.interfaces.IDictionaryApp);
-      var res = myComponent.LookUp(encodeURI(this.selectionWord));
+      var myComponent = Components.classes['@h5i.biz/XPCOM/ISummaryService;1']
+        .createInstance(Components.interfaces.ISummaryService);
+      var res = myComponent.Summarize(unescape(encodeURI(this.selectionWord)));
     } catch (err) {
       alert(err);
     }
     return;
   },
 
-  getDefinition: function() {
-    try {
-      netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-      var myComponent = Components.classes['@h5i.biz/XPCOM/IDictionaryApp;1']
-        .createInstance(Components.interfaces.IDictionaryApp);
-      var res = myComponent.GetDefinition(unescape(encodeURI(this.selectionWord)));
-      return decodeURIComponent(escape(res));
-    } catch (err) {
-      alert(err);
-    }
-    return "";
-  },
-
   onContextMenuSelect: function() {
-    this.lookupDictionary();
-    if (this.twitterOn) this.sendTwitter(); 
+    this.summarize();
   },
 
-  onLookupKey: function(event) {
+  onSummarizeKey: function(event) {
     this.setSelectionWord(null);
-    this.lookupDictionary();
-    if (this.twitterOn) this.sendTwitter(); 
+    this.summarize();
   },
 
   onConfigure: function() {
-    window.openDialog("chrome://dictionaryfox/content/config.xul", 
+    window.openDialog("chrome://summaryfox/content/config.xul", 
                       "_blank",
                       "chrome,resizable=no,dependent=yes");
-  },
-
-  sendTwitter: function() {
-    if(this.selectionWord == "") return;
-    if(this.userpass == null) {
-      alert("Username/Password is required to record history in Twitter.");
-      return;
-    }
-    var text = "looked up \"" + this.selectionWord + "\". #dictionaryfox\n" + this.getDefinition();
-    text = text.substr(0,140);
-    var params = "status=" + encodeURIComponent(text);
-    var request = new HttpRequest("https://twitter.com/statuses/update.json", params);
-    request.setAuthorization(this.userpass.user, this.userpass.password);
-    request.asyncOpen(null);
   }
 }
 
@@ -409,8 +290,8 @@ HttpRequest.prototype.StreamListener.prototype = {
   }
 };
 
-var gDictionaryFox = new DictionaryFox();
-document.addEventListener("mousemove", function(e) { gDictionaryFox.updateCursorLoc(e); }, true);
-document.addEventListener("mousedown", function(e) { gDictionaryFox.updateCursorLoc(e); }, true);
-document.addEventListener("contextmenu", function(e) { gDictionaryFox.setSelectionWord(e); }, true);
-window.addEventListener("load", function(e) { gDictionaryFox.load(); }, false);
+var gSummaryFox = new SummaryFox();
+document.addEventListener("mousemove", function(e) { gSummaryFox.updateCursorLoc(e); }, true);
+document.addEventListener("mousedown", function(e) { gSummaryFox.updateCursorLoc(e); }, true);
+document.addEventListener("contextmenu", function(e) { gSummaryFox.setSelectionWord(e); }, true);
+window.addEventListener("load", function(e) { gSummaryFox.load(); }, false);

@@ -1,0 +1,8 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(6BB0A4F6-C999-11DE-919C-4B7256D89593)]
+interface ISummaryService: nsISupports
+{
+  void Summarize(in string a);
+};
+

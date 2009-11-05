@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<overlay id="summaryfox" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <menupopup id="menu_ToolsPopup">
+    <menuitem label='SummaryFox' oncommand='gSummaryFox.onConfigure()'/>
+  </menupopup>
+  <popup id="contentAreaContextMenu">
+    <menuitem label='Summarize' oncommand='gSummaryFox.onContextMenuSelect();'/>
+    <keyset>
+      <key id="summaryfox-key-summarize" oncommand='gSummaryFox.onSummarizeKey(event);'/>
+    </keyset>
+  </popup>
+  <stringbundle id="localeKeys" src="chrome://global/locale/keys.properties"/>
+  <stringbundle id="platformKeys" src="chrome://global-platform/locale/platformKeys.properties"/>
+  <script src="summaryfox.js"/>
+</overlay>
+

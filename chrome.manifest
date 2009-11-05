@@ -1,2 +1,2 @@
-content dictionaryfox chrome/content/
-overlay chrome://browser/content/browser.xul chrome://dictionaryfox/content/dictionaryfox.xul
+content summaryfox chrome/content/
+overlay chrome://browser/content/browser.xul chrome://summaryfox/content/summaryfox.xul

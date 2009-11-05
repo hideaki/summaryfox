@@ -34,7 +34,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-const DictionaryFoxConfig = {
+const SummaryFoxConfig = {
 
   vkNames: [],
   platformKeys: {},
@@ -43,7 +43,7 @@ const DictionaryFoxConfig = {
   onLoad: function() {
     /* load preference service */
     this.prefService = Components.classes['@mozilla.org/preferences-service;1']
-      .getService(Components.interfaces.nsIPrefService).getBranch("extensions.dictionaryfox.");
+      .getService(Components.interfaces.nsIPrefService).getBranch("extensions.summaryfox.");
 
     this.localeKeys = document.getElementById("localeKeys");
 
@@ -80,23 +80,11 @@ const DictionaryFoxConfig = {
     /* display current shortcut in textbox */
     var pref = this.prefService.getCharPref("shortcut");
     var param = pref.split(/,/);
-    var e = document.getElementById("dictionaryfox-key-lookup");
+    var e = document.getElementById("summaryfox-key-summarize");
     e.value = this.getPrintableKeyName(param[2], param[0], param[1]);
     e.initialValue = e.pref = pref;
 
-    /* display twitter account info */
-    var twitterOn = this.prefService.getBoolPref("twitterOn");
-    /* the statement after || covers the case where config.xul is
-     * poped up from Add-ons window
-     */
-    var dictionaryFox = window.opener.gDictionaryFox || window.opener.opener.gDictionaryFox;
-    var userpass = dictionaryFox.getUserPass();
-    var twitelem = document.getElementById("dictionaryfox-twitter-on");
-    var userelem = document.getElementById("dictionaryfox-twitter-username");
-    var passelem = document.getElementById("dictionaryfox-twitter-password");
-    twitelem.checked = twitterOn;
-    userelem.value = userpass == null ? "" : userpass.user;
-    passelem.value = userpass == null ? "" : userpass.password;
+    var summaryFox = window.opener.gSummaryFox || window.opener.opener.gSummaryFox;
   },
 
   recognize: function(e) {
@@ -163,27 +151,17 @@ const DictionaryFoxConfig = {
   },
 
   onConfigOk: function() {
-    var keyelem = document.getElementById("dictionaryfox-key-lookup");
-    var twitelem = document.getElementById("dictionaryfox-twitter-on");
-    var userelem = document.getElementById("dictionaryfox-twitter-username");
-    var passelem = document.getElementById("dictionaryfox-twitter-password");
-    if (twitelem.checked == true && (userelem.value == "" || passelem.value == "")) {
-      alert("To record history, Twitter username/password is required.");
-      return false;
-    }
+    var keyelem = document.getElementById("summaryfox-key-summarize");
     this.prefService.setCharPref("shortcut", keyelem.pref);
     if (keyelem.pref != keyelem.initialValue) {
       alert("New shortcut key affects only new windows.");
     }
-    this.prefService.setBoolPref("twitterOn", twitelem.checked);
     /* the statement after || covers the case where config.xul is
      * poped up from Add-ons window
      */
-    var dictionaryFox = window.opener.gDictionaryFox || window.opener.opener.gDictionaryFox;
-    dictionaryFox.saveUserPass(userelem.value, passelem.value);
+    var summaryFox = window.opener.gSummaryFox || window.opener.opener.gSummaryFox;
     /* set saved info into runtime */
-    dictionaryFox.setupShortcut();
-    dictionaryFox.setupTwitter();
+    summaryFox.setupShortcut();
     return true;
   },
 

@@ -1,15 +1,15 @@
 ZIP = zip
 
-XPT_FILE_SRC = xpcom/src/IDictionaryApp.xpt
-XPT_FILE_SRC_SRC = xpcom/src/IDictionaryApp.idl
-XPT_FILE = components/IDictionaryApp.xpt
-DYLIB_FILE = components/libIDictionaryApp.dylib
-DYLIB_FILE_SRC = xpcom/src/libIDictionaryApp.dylib
-DYLIB_FILE_SRC_SRC = xpcom/src/IDictionaryApp.idl xpcom/src/DictionaryApp.cpp xpcom/src/DictionaryApp.h xpcom/src/DictionaryAppModule.cpp
+XPT_FILE_SRC = xpcom/src/ISummaryService.xpt
+XPT_FILE_SRC_SRC = xpcom/src/ISummaryService.idl
+XPT_FILE = components/ISummaryService.xpt
+DYLIB_FILE = components/libISummaryService.dylib
+DYLIB_FILE_SRC = xpcom/src/libISummaryService.dylib
+DYLIB_FILE_SRC_SRC = xpcom/src/ISummaryService.idl xpcom/src/SummaryService.M xpcom/src/SummaryService.h xpcom/src/SummaryServiceModule.cpp
 
-FILES = install.rdf chrome.manifest chrome/content/config.js chrome/content/config.xul chrome/content/dictionaryfox.js chrome/content/dictionaryfox.xul defaults/preferences/dictionaryfox.js
+FILES = install.rdf chrome.manifest chrome/content/config.js chrome/content/config.xul chrome/content/summaryfox.js chrome/content/summaryfox.xul defaults/preferences/summaryfox.js
 
-TARGET = dictionaryfox.xpi
+TARGET = summaryfox.xpi
 
 $(TARGET): $(FILES) $(XPT_FILE) $(DYLIB_FILE)
 	$(ZIP) -r $(TARGET) chrome chrome.manifest components defaults install.rdf

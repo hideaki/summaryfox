@@ -3,12 +3,12 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:html="http://www.w3.org/1999/xhtml"
-  id="dictionaryfox-config"
-  onload="return DictionaryFoxConfig.onLoad();"
-  onunload="return DictionaryFoxConfig.onCancel();"
-  ondialogaccept="return DictionaryFoxConfig.onConfigOk();"
+  id="summaryfox-config"
+  onload="return SummaryFoxConfig.onLoad();"
+  onunload="return SummaryFoxConfig.onCancel();"
+  ondialogaccept="return SummaryFoxConfig.onConfigOk();"
   buttons="cancel,accept"
-  title="DictionaryFox - Preferences" style="padding:0px;">
+  title="SummaryFox - Preferences" style="padding:0px;">
   <script type="application/x-javascript" src="config.js"/>
   <stringbundle id="platformKeys" src="chrome://global-platform/locale/platformKeys.properties"/>
   <stringbundle id="localeKeys" src="chrome://global/locale/keys.properties"/>
@@ -22,38 +22,9 @@
       <rows>
         <row>
           <hbox align="center">
-            <label control="dictionaryfox-key-lookup" value="Look Up in Dictionary"/>
+            <label control="summaryfox-key-summarize" value="Summarize"/>
           </hbox>
-          <textbox flex="1" id="dictionaryfox-key-lookup" onclick="this.select()" onkeypress="DictionaryFoxConfig.recognize(event);"/>
-        </row>
-      </rows>
-    </grid>
-  </groupbox>
-  <groupbox>
-    <caption label="Twitter Account"/>
-    <grid style="padding:10px;">
-      <columns>
-        <column />
-        <column flex="1"/>
-      </columns>
-      <rows>
-        <row>
-          <hbox align="center">
-            <label control="dictionaryfox-twitter-on" value="Record History in Twitter"/>
-          </hbox>
-          <checkbox id="dictionaryfox-twitter-on"/>
-        </row>
-        <row>
-          <hbox align="center">
-            <label control="dictionaryfox-twitter-username" value="Twitter Username"/>
-          </hbox>
-          <textbox flex="1" id="dictionaryfox-twitter-username" onclick="this.select()"/>
-        </row>
-        <row>
-          <hbox align="center">
-            <label control="dictionaryfox-twitter-password" value="Password"/>
-          </hbox>
-          <textbox flex="1" type="password" id="dictionaryfox-twitter-password" onclick="this.select()"/>
+          <textbox flex="1" id="summaryfox-key-summarize" onclick="this.select()" onkeypress="SummaryFoxConfig.recognize(event);"/>
         </row>
       </rows>
     </grid>
