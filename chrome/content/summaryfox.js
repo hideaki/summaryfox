@@ -44,20 +44,6 @@ SummaryFox.prototype = {
     /* load preference service */
     this.prefService = Components.classes['@mozilla.org/preferences-service;1']
       .getService(Components.interfaces.nsIPrefService).getBranch("extensions.summaryfox.");
-
-    this.setupShortcut();
-  },
-
-  setupShortcut: function() {
-    var elem = document.getElementById("summaryfox-key-summarize");
-    var pref = this.prefService.getCharPref("shortcut");
-    var params = pref.split(/,/);
-
-    if (params[0])
-      elem.setAttribute("key", params[0]);
-    if (params[1])
-      elem.setAttribute("keycode", params[1]);
-    elem.setAttribute("modifiers", params[2]);
   },
 
   updateCursorLoc: function(event) {
@@ -138,17 +124,6 @@ SummaryFox.prototype = {
 
   onContextMenuSelect: function() {
     this.summarize();
-  },
-
-  onSummarizeKey: function(event) {
-    this.setSelectionWord(null);
-    this.summarize();
-  },
-
-  onConfigure: function() {
-    window.openDialog("chrome://summaryfox/content/config.xul", 
-                      "_blank",
-                      "chrome,resizable=no,dependent=yes");
   }
 }
 

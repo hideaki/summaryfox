@@ -33,7 +33,7 @@ $(XPT_FILE): ISummaryService.idl
 	$(XPIDL) -m typelib -w -v -I $(GECKO_SDK_PATH)/idl -e $(XPT_FILE) ISummaryService.idl
 
 $(DYLIB_FILE): $(CPP_FILES) $(IDL_H_FILE)
-	$(CPP) -Wall -Os -dynamiclib -arch i386 -o $(DYLIB_FILE) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $(GECKO_LDFLAGS) $(FRAMEWORK_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(CPP_FILES)
+	$(CPP) -Wall -Os -dynamiclib -arch i386 -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -o $(DYLIB_FILE) $(GECKO_CONFIG_INCLUDE) $(GECKO_DEFINES) $(GECKO_INCLUDES) $(GECKO_LDFLAGS) $(FRAMEWORK_LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) $(CPP_FILES)
 	chmod +x $(DYLIB_FILE)
  
 clean: 

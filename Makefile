@@ -7,7 +7,7 @@ DYLIB_FILE = components/libISummaryService.dylib
 DYLIB_FILE_SRC = xpcom/src/libISummaryService.dylib
 DYLIB_FILE_SRC_SRC = xpcom/src/ISummaryService.idl xpcom/src/SummaryService.M xpcom/src/SummaryService.h xpcom/src/SummaryServiceModule.cpp
 
-FILES = install.rdf chrome.manifest chrome/content/config.js chrome/content/config.xul chrome/content/summaryfox.js chrome/content/summaryfox.xul defaults/preferences/summaryfox.js
+FILES = install.rdf chrome.manifest chrome/content/summaryfox.js chrome/content/summaryfox.xul defaults/preferences/summaryfox.js
 
 TARGET = summaryfox.xpi
 

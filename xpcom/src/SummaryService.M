@@ -19,6 +19,7 @@ NS_IMETHODIMP SummaryService::Summarize(const char *a)
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   NSPasteboard *pboard = [NSPasteboard pasteboardWithUniqueName];
+  [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
   [pboard setString:[NSString stringWithUTF8String:a] forType:NSStringPboardType];
   NSPerformService(@"Summarize", pboard);
   [pool release];

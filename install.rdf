@@ -3,10 +3,9 @@
   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>summaryfox@h5i.biz</em:id>
-    <em:version>0.1</em:version>
+    <em:id>summaryfox0@h5i.biz</em:id>
+    <em:version>0.2</em:version>
     <em:type>2</em:type>
-    <em:optionsURL>chrome://summaryfox/content/config.xul</em:optionsURL>
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
@@ -16,7 +15,7 @@
     </em:targetApplication>
     <em:targetPlatform>Darwin_x86-gcc3</em:targetPlatform>
     <em:name>SummaryFox</em:name>
-    <em:description>Summarizes highlighted sentences with Summary Service on Mac OS X.</em:description>
+    <em:description>Summarizes text with Summary Service on Mac OS X.</em:description>
     <em:creator>Hideaki Hayashi</em:creator>
 
   </Description>
