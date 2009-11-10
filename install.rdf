@@ -4,7 +4,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>summaryfox0@h5i.biz</em:id>
-    <em:version>0.2</em:version>
+    <em:version>0.3</em:version>
     <em:type>2</em:type>
     <em:targetApplication>
       <Description>
