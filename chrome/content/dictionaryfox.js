@@ -265,7 +265,7 @@ DictionaryFox.prototype = {
     var text = "looked up \"" + this.selectionWord + "\". #dictionaryfox\n" + this.getDefinition();
     text = text.substr(0,140);
     var params = "status=" + encodeURIComponent(text);
-    var request = new HttpRequest("https://twitter.com/statuses/update.json", params);
+    var request = new DictionaryFox.HttpRequest("https://twitter.com/statuses/update.json", params);
     request.setAuthorization(this.userpass.user, this.userpass.password);
     request.asyncOpen(null);
   }
@@ -273,7 +273,7 @@ DictionaryFox.prototype = {
 
 //Base64 encoding based on public domain code by Tyler Akins -- http://rumkin.co
 
-var Base64 = {
+DictionaryFox.prototype.Base64 = {
   keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
   encode: function(input) {
@@ -306,7 +306,7 @@ var Base64 = {
   }
 };
 
-function HttpRequest(url, postData) {
+DictionaryFox.prototype.HttpRequest = function (url, postData) {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
   var uri = ioService.newURI(url, null, null);
   this.channel = ioService.newChannelFromURI(uri);
@@ -323,13 +323,13 @@ function HttpRequest(url, postData) {
   }
 }
 
-HttpRequest.prototype = {
+DictionaryFox.prototype.HttpRequest.prototype = {
   setRequestHeader: function(name, value) {
     this.httpChannel.setRequestHeader(name, value, false);
   },
 
   setAuthorization: function(user, pass) {
-    this.setRequestHeader("Authorization", "Basic " + Base64.encode(user + ":" + pass), false);
+    this.setRequestHeader("Authorization", "Basic " + DictionaryFox.Base64.encode(user + ":" + pass), false);
   },
 
   asyncOpen: function(callback) {
@@ -339,13 +339,13 @@ HttpRequest.prototype = {
   }
 };
 
-HttpRequest.prototype.StreamListener = function (httpreq, callback) {
+DictionaryFox.prototype.HttpRequest.prototype.StreamListener = function (httpreq, callback) {
   this.mCallbackFunc = callback;
   this.mData = "";
   this.mHttpRequest = httpreq;
 };
 
-HttpRequest.prototype.StreamListener.prototype = {
+DictionaryFox.prototype.HttpRequest.prototype.StreamListener.prototype = {
 
   // nsIStreamListener
   onStartRequest: function (aRequest, aContext) {
