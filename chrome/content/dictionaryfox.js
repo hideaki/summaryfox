@@ -273,7 +273,7 @@ DictionaryFox.prototype = {
 
 //Base64 encoding based on public domain code by Tyler Akins -- http://rumkin.co
 
-DictionaryFox.prototype.Base64 = {
+DictionaryFox.Base64 = {
   keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
   encode: function(input) {
@@ -306,7 +306,7 @@ DictionaryFox.prototype.Base64 = {
   }
 };
 
-DictionaryFox.prototype.HttpRequest = function (url, postData) {
+DictionaryFox.HttpRequest = function (url, postData) {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
   var uri = ioService.newURI(url, null, null);
   this.channel = ioService.newChannelFromURI(uri);
@@ -323,7 +323,7 @@ DictionaryFox.prototype.HttpRequest = function (url, postData) {
   }
 }
 
-DictionaryFox.prototype.HttpRequest.prototype = {
+DictionaryFox.HttpRequest.prototype = {
   setRequestHeader: function(name, value) {
     this.httpChannel.setRequestHeader(name, value, false);
   },
@@ -339,13 +339,13 @@ DictionaryFox.prototype.HttpRequest.prototype = {
   }
 };
 
-DictionaryFox.prototype.HttpRequest.prototype.StreamListener = function (httpreq, callback) {
+DictionaryFox.HttpRequest.prototype.StreamListener = function (httpreq, callback) {
   this.mCallbackFunc = callback;
   this.mData = "";
   this.mHttpRequest = httpreq;
 };
 
-DictionaryFox.prototype.HttpRequest.prototype.StreamListener.prototype = {
+DictionaryFox.HttpRequest.prototype.StreamListener.prototype = {
 
   // nsIStreamListener
   onStartRequest: function (aRequest, aContext) {
