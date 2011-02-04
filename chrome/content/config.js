@@ -86,15 +86,19 @@ const DictionaryFoxConfig = {
 
     /* display twitter account info */
     var twitterOn = this.prefService.getBoolPref("twitterOn");
+    var shorturlOn = this.prefService.getBoolPref("shorturlOn");
     /* the statement after || covers the case where config.xul is
      * poped up from Add-ons window
      */
     var dictionaryFox = window.opener.gDictionaryFox || window.opener.opener.gDictionaryFox;
     var userpass = dictionaryFox.getUserPass();
     var twitelem = document.getElementById("dictionaryfox-twitter-on");
+    var shorturlelem = document.getElementById("dictionaryfox-shorturl-on");
     var userelem = document.getElementById("dictionaryfox-twitter-username");
     var passelem = document.getElementById("dictionaryfox-twitter-password");
     twitelem.checked = twitterOn;
+    shorturlelem.checked = shorturlOn;
+    shorturlelem.disabled = !twitterOn;
     userelem.value = userpass == null ? "" : userpass.user;
     passelem.value = userpass == null ? "" : userpass.password;
   },
@@ -165,6 +169,7 @@ const DictionaryFoxConfig = {
   onConfigOk: function() {
     var keyelem = document.getElementById("dictionaryfox-key-lookup");
     var twitelem = document.getElementById("dictionaryfox-twitter-on");
+    var shorturlelem = document.getElementById("dictionaryfox-shorturl-on");
     var userelem = document.getElementById("dictionaryfox-twitter-username");
     var passelem = document.getElementById("dictionaryfox-twitter-password");
     if (twitelem.checked == true && (userelem.value == "" || passelem.value == "")) {
@@ -176,6 +181,7 @@ const DictionaryFoxConfig = {
       alert("New shortcut key affects only new windows.");
     }
     this.prefService.setBoolPref("twitterOn", twitelem.checked);
+    this.prefService.setBoolPref("shorturlOn", shorturlelem.checked);
     /* the statement after || covers the case where config.xul is
      * poped up from Add-ons window
      */
@@ -188,5 +194,11 @@ const DictionaryFoxConfig = {
   },
 
   onCancel: function() {
+  },
+
+  onTwitterCheckboxClick: function() {
+    var twitelem = document.getElementById("dictionaryfox-twitter-on");
+    var shorturlelem = document.getElementById("dictionaryfox-shorturl-on");
+    shorturlelem.disabled = twitelem.checked;
   }
 }

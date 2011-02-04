@@ -4,7 +4,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>dictionaryfox@h5i.biz</em:id>
-    <em:version>0.11</em:version>
+    <em:version>0.12</em:version>
     <em:type>2</em:type>
     <em:optionsURL>chrome://dictionaryfox/content/config.xul</em:optionsURL>
     <em:targetApplication>

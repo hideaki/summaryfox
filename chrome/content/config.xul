@@ -30,7 +30,7 @@
     </grid>
   </groupbox>
   <groupbox>
-    <caption label="Twitter Account"/>
+    <caption label="Twitter"/>
     <grid style="padding:10px;">
       <columns>
         <column />
@@ -41,7 +41,13 @@
           <hbox align="center">
             <label control="dictionaryfox-twitter-on" value="Record History in Twitter"/>
           </hbox>
-          <checkbox id="dictionaryfox-twitter-on"/>
+          <checkbox id="dictionaryfox-twitter-on" onclick="return DictionaryFoxConfig.onTwitterCheckboxClick();"/>
+        </row>
+        <row>
+          <hbox align="center">
+            <label control="dictionaryfox-shorturl-on" value="Record the page the word appeared on"/>
+          </hbox>
+          <checkbox id="dictionaryfox-shorturl-on"/>
         </row>
         <row>
           <hbox align="center">

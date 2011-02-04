@@ -36,6 +36,7 @@
 
 function DictionaryFox() {
   this.selectionWord = "";
+  this.selectionInTextbox = false;
   this.passHost = "chrome://dictionaryfox";
 }
 
@@ -147,6 +148,7 @@ DictionaryFox.prototype = {
 
   setupTwitter: function() {
     this.twitterOn = this.prefService.getBoolPref("twitterOn");
+    this.shorturlOn = this.prefService.getBoolPref("shorturlOn");
     this.userpass = this.getUserPass();
   },
 
@@ -163,11 +165,13 @@ DictionaryFox.prototype = {
        */
       //var target = event.explicitOriginalTarget;
       var selectionString = "";
+      this.selectionInTextbox = false;
       if ((target) && 
           ((target.nodeName.toUpperCase() == "TEXTAREA") ||
            (target.nodeName.toUpperCase() == "INPUT" && target.type == "text"))){
         /* get selection from a text box */
         selectionString = target.value.substring(target.selectionStart, target.selectionEnd);
+        this.selectionInTextbox = true;
       }else{
         /* get selection from regular document */
         var selection = window.content.getSelection();
@@ -262,13 +266,42 @@ DictionaryFox.prototype = {
       alert("Username/Password is required to record history in Twitter.");
       return;
     }
+    if(this.shorturlOn && !this.selectionInTextbox) {
+      //record shortcut url only when the selection is not in textbox
+      this.sendIsGd();
+      return;
+    }
+    this.sendTwitterBottomHalf();
+  },
+
+  sendTwitterBottomHalf: function() {
     var text = "looked up \"" + this.selectionWord + "\". #dictionaryfox\n" + this.getDefinition();
     text = text.substr(0,140);
     var params = "status=" + encodeURIComponent(text);
     var request = new DictionaryFox.HttpRequest("https://twitter.com/statuses/update.json", params);
     request.setAuthorization(this.userpass.user, this.userpass.password);
-    request.asyncOpen(null);
-  }
+    request.asyncOpen(null, null);
+  },
+
+  sendIsGd: function() {
+    var request = new DictionaryFox.HttpRequest("http://is.gd/api.php?longurl=" + encodeURIComponent(window.content.location.href), null);
+    request.asyncOpen(this, this.sendTwitterWithShortUrl);
+  },
+
+  sendTwitterWithShortUrl: function(aStatus, data) {
+    if(!Components.isSuccessCode(aStatus)) {
+      //is.gd request failed. record without short url
+      this.sendTwitterBottomHalf();
+      return;
+    }
+    var text = "looked up \"" + this.selectionWord + "\". #dictionaryfox\n" + this.getDefinition();
+    if(text.length > 140 - data.length -1)
+      text = text.substr(0,140 - data.length -1);
+    var params = "status=" + encodeURIComponent(text + " " + data);
+    var request = new DictionaryFox.HttpRequest("https://twitter.com/statuses/update.json", params);
+    request.setAuthorization(this.userpass.user, this.userpass.password);
+    request.asyncOpen(null, null);
+  } 
 }
 
 //Base64 encoding based on public domain code by Tyler Akins -- http://rumkin.co
@@ -332,14 +365,15 @@ DictionaryFox.HttpRequest.prototype = {
     this.setRequestHeader("Authorization", "Basic " + DictionaryFox.Base64.encode(user + ":" + pass), false);
   },
 
-  asyncOpen: function(callback) {
-    this.listener = new this.StreamListener(this, callback);
+  asyncOpen: function(callbackobj, callback) {
+    this.listener = new this.StreamListener(this, callbackobj, callback);
     this.channel.notificationCallbacks = this.listener;
     this.channel.asyncOpen(this.listener, null);
   }
 };
 
-DictionaryFox.HttpRequest.prototype.StreamListener = function (httpreq, callback) {
+DictionaryFox.HttpRequest.prototype.StreamListener = function (httpreq, callbackobj, callback) {
+  this.mCallbackObj = callbackobj;
   this.mCallbackFunc = callback;
   this.mData = "";
   this.mHttpRequest = httpreq;
@@ -364,10 +398,10 @@ DictionaryFox.HttpRequest.prototype.StreamListener.prototype = {
   onStopRequest: function (aRequest, aContext, aStatus) {
     if (Components.isSuccessCode(aStatus)) {
       // request was successfull
-      if (this.mCallbackFunc) this.mCallbackFunc(aStatus, this.mData);
+      if (this.mCallbackFunc) this.mCallbackFunc.apply(this.mCallbackObj, [aStatus, this.mData]);
     } else {
       // request failed
-      if (this.mCallbackFunc) this.mCallbackFunc(aStatus, null);
+      if (this.mCallbackFunc) this.mCallbackFunc.apply(this.mCallbackObj, [aStatus, null]);
     }
 
     this.mHttpRequest.channel = null;
